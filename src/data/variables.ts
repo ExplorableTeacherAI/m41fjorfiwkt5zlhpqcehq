@@ -279,6 +279,16 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         color: '#8E90F5',
         bgColor: 'rgba(142, 144, 245, 0.15)',
     },
+    // ─────────────────────────────────────────
+    // SECTION: The Complete Curve Sketch
+    // ─────────────────────────────────────────
+    finalSketchPoints: {
+        defaultValue: [1.2, 1.2, 0, -1.2, -1.2],
+        type: 'array',
+        label: 'Sketch points',
+        description: 'The y-values the student drags at x = -3, -1, 0, 1 and 3',
+    },
+
     inflectionCount: {
         defaultValue: '',
         type: 'text',
