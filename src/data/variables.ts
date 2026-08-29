@@ -81,84 +81,162 @@ export interface VariableDefinition {
  *    { defaultValue: { x: 5, y: 10 }, type: 'object', schema: '{ x: number, y: number }' }
  */
 export const variableDefinitions: Record<string, VariableDefinition> = {
-    // ========================================
-    // ADD YOUR VARIABLES HERE
-    // ========================================
-
-    // Uncomment and modify these examples for your lesson:
-
-    /*
     // ─────────────────────────────────────────
-    // NUMBER - Use with sliders
+    // SECTION: Where the Curve Turns
     // ─────────────────────────────────────────
-    myValue: {
-        defaultValue: 5,
+    curveX: {
+        defaultValue: 1.6,
         type: 'number',
-        label: 'My Value',
-        description: 'A number that controls something',
-        unit: 'm',           // optional unit display
-        min: 0,
-        max: 10,
-        step: 0.5,
+        label: 'x on the curve',
+        description: 'Position of the draggable point along y = 2x/(1+x^2)',
+        min: -4,
+        max: 4,
+        step: 0.05,
+        color: '#62D0AD',
     },
-
-    // ─────────────────────────────────────────
-    // TEXT - Free text input
-    // ─────────────────────────────────────────
-    lessonTitle: {
-        defaultValue: 'My Lesson',
+    curveHighlight: {
+        defaultValue: '',
         type: 'text',
-        label: 'Lesson Title',
-        description: 'The title of your lesson',
-        placeholder: 'Enter a title...',
+        label: 'Curve highlight',
+        description: 'Which element is highlighted across the curve and its gradient graph',
+        color: '#62D0AD',
+        bgColor: 'rgba(98, 208, 173, 0.22)',
     },
-
-    // ─────────────────────────────────────────
-    // SELECT - Dropdown with options
-    // ─────────────────────────────────────────
-    difficulty: {
-        defaultValue: 'medium',
-        type: 'select',
-        label: 'Difficulty',
-        description: 'The difficulty level of the lesson',
-        options: ['easy', 'medium', 'hard', 'expert'],
-    },
-
-    // ─────────────────────────────────────────
-    // BOOLEAN - Toggle switch
-    // ─────────────────────────────────────────
-    showHints: {
-        defaultValue: true,
+    foundTurningLeft: {
+        defaultValue: false,
         type: 'boolean',
-        label: 'Show Hints',
-        description: 'Toggle to show or hide hints',
+        label: 'Left turning point found',
+        description: 'True once the student has parked the point on the turning point at x = -1',
+    },
+    foundTurningRight: {
+        defaultValue: false,
+        type: 'boolean',
+        label: 'Right turning point found',
+        description: 'True once the student has parked the point on the turning point at x = 1',
+    },
+    turningPointX: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Turning point answer',
+        description: 'Student answer for the turning points of y = 3x/(4+x^2)',
+        placeholder: '???',
+        correctAnswer: ['2', '+-2', '±2', '2 and -2', '2, -2'],
+        color: '#8E90F5',
+        bgColor: 'rgba(142, 144, 245, 0.15)',
     },
 
     // ─────────────────────────────────────────
-    // ARRAY - List of numbers
+    // SECTION: Building the Sign Table
     // ─────────────────────────────────────────
-    dataPoints: {
-        defaultValue: [1, 4, 9, 16, 25],
-        type: 'array',
-        label: 'Data Points',
-        description: 'Y-values for plotting a graph',
+    signLeft: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Prediction for x < -1',
+        description: 'Student prediction of the gradient sign left of x = -1 (rising or falling)',
+    },
+    signMiddle: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Prediction for -1 < x < 1',
+        description: 'Student prediction of the gradient sign between the turning points',
+    },
+    signRight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Prediction for x > 1',
+        description: 'Student prediction of the gradient sign right of x = 1',
+    },
+    signTableHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Sign table highlight',
+        description: 'Which part of the sign table figure is highlighted',
+        color: '#62D0AD',
+        bgColor: 'rgba(98, 208, 173, 0.22)',
+    },
+    signTableGradient: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Gradient sign answer',
+        description: 'Student answer for the sign of the gradient between x = -2 and x = 2',
+        placeholder: '???',
+        options: ['positive', 'negative', 'zero'],
+        correctAnswer: 'negative',
+        color: '#8E90F5',
+        bgColor: 'rgba(142, 144, 245, 0.15)',
+    },
+    signTableShape: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Curve shape answer',
+        description: 'Student answer for what the curve does between the two turning points',
+        placeholder: '???',
+        options: ['rises', 'falls', 'stays flat'],
+        correctAnswer: 'falls',
+        color: '#8E90F5',
+        bgColor: 'rgba(142, 144, 245, 0.15)',
     },
 
     // ─────────────────────────────────────────
-    // OBJECT - Complex structured data
+    // SECTION: Where the Curve Changes Its Bend
     // ─────────────────────────────────────────
-    graphSettings: {
-        defaultValue: { 
-            xMin: -10, 
-            xMax: 10, 
-            showGrid: true 
-        },
-        type: 'object',
-        label: 'Graph Settings',
-        description: 'Configuration for the graph display',
-        schema: '{ xMin: number, xMax: number, showGrid: boolean }',
+    bendX: {
+        defaultValue: -3.2,
+        type: 'number',
+        label: 'x on the curve',
+        description: 'Position of the draggable painting point along the curve',
+        min: -4,
+        max: 4,
+        step: 0.05,
+        color: '#62D0AD',
     },
-    */
+    bendVisitedMin: {
+        defaultValue: -3.2,
+        type: 'number',
+        label: 'Painted from',
+        description: 'Smallest x the painting point has reached',
+        min: -4,
+        max: 4,
+        step: 0.05,
+    },
+    bendVisitedMax: {
+        defaultValue: -3.2,
+        type: 'number',
+        label: 'Painted to',
+        description: 'Largest x the painting point has reached',
+        min: -4,
+        max: 4,
+        step: 0.05,
+    },
+    bendHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Bend highlight',
+        description: 'Which bend direction is highlighted in the painting figure',
+        color: '#62D0AD',
+        bgColor: 'rgba(98, 208, 173, 0.22)',
+    },
+    bendDirection: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Bend direction answer',
+        description: 'Student answer for the bend direction at x = 1',
+        placeholder: '???',
+        options: ['upward', 'downward'],
+        correctAnswer: 'downward',
+        color: '#8E90F5',
+        bgColor: 'rgba(142, 144, 245, 0.15)',
+    },
+    inflectionCount: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Inflection point count',
+        description: 'Student answer for how many inflection points the curve has',
+        placeholder: '???',
+        correctAnswer: ['3', 'three'],
+        color: '#8E90F5',
+        bgColor: 'rgba(142, 144, 245, 0.15)',
+    },
 };
 
 /**
