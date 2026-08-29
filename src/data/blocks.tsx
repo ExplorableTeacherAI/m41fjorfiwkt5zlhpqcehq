@@ -8,6 +8,7 @@ import { getDefaultValues, variableDefinitions } from "./variables";
 import { graphSketchIntroBlocks } from "./sections/graphSketchIntro";
 import { turningPointsBlocks } from "./sections/turningPoints";
 import { signTableBlocks } from "./sections/signTable";
+import { asymptoteBlocks } from "./sections/asymptotes";
 import { bendAndInflectionBlocks } from "./sections/bendAndInflection";
 import { graphSketchConclusionBlocks } from "./sections/graphSketchConclusion";
 useVariableStore.getState().initialize(getDefaultValues());
@@ -93,6 +94,7 @@ export const blocks: ReactElement[] = [
     ...graphSketchIntroBlocks,
     ...turningPointsBlocks,
     ...signTableBlocks,
+    ...asymptoteBlocks,
     ...bendAndInflectionBlocks,
     ...graphSketchConclusionBlocks,
 ];

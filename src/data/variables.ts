@@ -178,6 +178,58 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
     },
 
     // ─────────────────────────────────────────
+    // SECTION: Vertical and Horizontal Asymptotes
+    // ─────────────────────────────────────────
+    asymptoteC: {
+        defaultValue: 1,
+        type: 'number',
+        label: 'Constant c',
+        description: 'The constant in the denominator x^2 + c',
+        min: -3,
+        max: 3,
+        step: 0.05,
+        color: '#62D0AD',
+    },
+    asymptoteProbeX: {
+        defaultValue: 1.6,
+        type: 'number',
+        label: 'Probe position',
+        description: 'x value probed in both asymptote views',
+        min: -3,
+        max: 3,
+        step: 0.05,
+        color: '#62D0AD',
+    },
+    asymptoteHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Asymptote highlight',
+        description: 'Which element is highlighted across the denominator and curve views',
+        color: '#62D0AD',
+        bgColor: 'rgba(98, 208, 173, 0.22)',
+    },
+    asymptoteVerticalAnswer: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Vertical asymptote answer',
+        description: 'Student answer for the vertical asymptotes of (x+1)/(x^2-9)',
+        placeholder: '???',
+        correctAnswer: ['3', '+-3', '±3', '3 and -3', '3, -3'],
+        color: '#8E90F5',
+        bgColor: 'rgba(142, 144, 245, 0.15)',
+    },
+    asymptoteHorizontalAnswer: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Horizontal asymptote answer',
+        description: 'Student answer for the horizontal asymptote of 5x/(x^2+4)',
+        placeholder: '???',
+        correctAnswer: ['0', 'y=0', 'y = 0'],
+        color: '#8E90F5',
+        bgColor: 'rgba(142, 144, 245, 0.15)',
+    },
+
+    // ─────────────────────────────────────────
     // SECTION: Where the Curve Changes Its Bend
     // ─────────────────────────────────────────
     bendX: {
