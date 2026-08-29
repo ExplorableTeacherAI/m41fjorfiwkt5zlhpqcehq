@@ -282,6 +282,16 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
     // ─────────────────────────────────────────
     // SECTION: The Complete Curve Sketch
     // ─────────────────────────────────────────
+    finalSketchStep: {
+        defaultValue: 1,
+        type: 'number',
+        label: 'Sketch step',
+        description: 'Which of the five steps is currently revealed on the final sketch',
+        min: 1,
+        max: 5,
+        step: 1,
+        color: '#62D0AD',
+    },
     finalSketchPoints: {
         defaultValue: [1.2, 1.2, 0, -1.2, -1.2],
         type: 'array',

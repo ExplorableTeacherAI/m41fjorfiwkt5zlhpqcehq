@@ -7,10 +7,19 @@ import {
     InlineFormula,
     InteractionHintSequence,
 } from "@/components/atoms";
-import { Figure } from "@/components/molecules";
+import { Figure, FigureSlider } from "@/components/molecules";
 import { useVar, useSetVar } from "@/stores";
 import { clamp, useSpring, type Vec2 } from "@/lib/motion";
 import { ACCENT, INK, INK_QUIET, INK_STRUCTURE, curveY } from "./turningPoints";
+import { getVariableInfo, numberPropsFromDefinition } from "../variables";
+
+const STEP_NAMES = [
+    "1. Turning points",
+    "2. Asymptotes",
+    "3. Sign of dy/dx",
+    "4. Points of inflection",
+    "5. The finished curve",
+];
 
 // ── Geometry ─────────────────────────────────────────────────────────────────
 
@@ -130,8 +139,23 @@ function SketchHandle({
     );
 }
 
+/** A short slanted arrow showing whether the curve climbs or falls here. */
+function DirectionArrow({ cx, cy, rising }: { cx: number; cy: number; rising: boolean }) {
+    const dy = rising ? -9 : 9;
+    const tipX = cx + 14;
+    const tipY = cy + dy;
+    const back = rising ? [[tipX - 8, tipY + 1], [tipX - 1, tipY + 8]] : [[tipX - 8, tipY - 1], [tipX - 1, tipY - 8]];
+    return (
+        <g stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" fill="none">
+            <line x1={cx - 14} y1={cy - dy} x2={tipX} y2={tipY} />
+            <polyline points={`${back[0][0]},${back[0][1]} ${tipX},${tipY} ${back[1][0]},${back[1][1]}`} strokeLinejoin="round" />
+        </g>
+    );
+}
+
 function FinalSketchDrawing() {
     const points = useVar<number[]>("finalSketchPoints", DEFAULT_POINTS);
+    const step = useVar<number>("finalSketchStep", 1);
     const svgRef = useRef<SVGSVGElement>(null);
 
     const matches = SKETCH_X.map((_, i) => Math.abs((points[i] ?? 0) - TARGETS[i]) <= TOLERANCE);
@@ -156,14 +180,18 @@ function FinalSketchDrawing() {
 
             <g fontSize="12" style={{ fontVariantNumeric: "tabular-nums" }}>
                 <text x="24" y="34" fill={INK}>{`${matchedCount} of 5 points in place`}</text>
-                {complete && (
+                {complete ? (
                     <text x={VIEW_W - 24} y="34" fill={ACCENT} textAnchor="end">
                         that is the curve
                     </text>
-                )}
+                ) : step >= 5 ? (
+                    <text x={VIEW_W - 24} y="34" fill={ACCENT} textAnchor="end">
+                        compare with the glow
+                    </text>
+                ) : null}
             </g>
 
-            {/* Step 3 — the horizontal asymptote. */}
+            {/* Step 2 — the horizontal asymptote. */}
             <line
                 x1={PLOT_LEFT}
                 y1={AXIS_Y}
@@ -173,13 +201,15 @@ function FinalSketchDrawing() {
                 strokeWidth="1.5"
                 strokeDasharray="5 5"
             />
-            <text x={PLOT_RIGHT} y={AXIS_Y + 18} fill={INK} fontSize="11" textAnchor="end">
-                y = 0
-            </text>
+            {step >= 2 && (
+                <text x={PLOT_RIGHT} y={AXIS_Y + 18} fill={INK} fontSize="11" textAnchor="end">
+                    y = 0
+                </text>
+            )}
             <line x1={xFor(0)} y1={70} x2={xFor(0)} y2={276} stroke={INK_QUIET} strokeWidth="1.5" />
 
-            {/* Step 5 — the points of inflection. */}
-            <g>
+            {/* Step 4 — the points of inflection. */}
+            <g opacity={step >= 4 ? 1 : 0} style={{ transition: "opacity 200ms ease" }}>
                 {inflectionX.map((x, i) => (
                     <g key={`inflection-${i}`}>
                         <rect
@@ -200,7 +230,7 @@ function FinalSketchDrawing() {
                 ))}
             </g>
 
-            {/* Step 2 — the turning points. */}
+            {/* Step 1 — the turning points. */}
             <g>
                 <circle cx={xFor(1)} cy={yFor(1)} r="8" fill="none" stroke={INK_STRUCTURE} strokeWidth="2" />
                 <text x={xFor(1) + 14} y={yFor(1) - 12} fill={INK} fontSize="11" textAnchor="start">
@@ -212,8 +242,17 @@ function FinalSketchDrawing() {
                 </text>
             </g>
 
-            {/* Step 6 — the curve the student builds. */}
-            {complete && (
+            {/* Step 3 — where the curve climbs and where it falls. */}
+            {step >= 3 && (
+                <g>
+                    <DirectionArrow cx={xFor(-2.2)} cy={100} rising={false} />
+                    <DirectionArrow cx={xFor(0.45)} cy={100} rising />
+                    <DirectionArrow cx={xFor(2.4)} cy={230} rising={false} />
+                </g>
+            )}
+
+            {/* Step 5 — the finished curve, glowing behind the student's sketch. */}
+            {(complete || step >= 5) && (
                 <path d={truePath} fill="none" stroke={ACCENT} strokeWidth="9" opacity={0.28} strokeLinecap="round" />
             )}
             <path
@@ -237,17 +276,28 @@ function FinalSketchFigure() {
     return (
         <Figure
             id="final-sketch-figure"
-            onReset={() => setVar("finalSketchPoints", [...DEFAULT_POINTS])}
-            caption="Everything the five steps produced is already marked. Drag the five teal points up and down until the shape obeys all of it."
+            onReset={() => {
+                setVar("finalSketchPoints", [...DEFAULT_POINTS]);
+                setVar("finalSketchStep", 1);
+            }}
+            caption="Walk the slider through the five steps. Each one adds what it found, and the last one reveals the finished curve behind your own sketch."
         >
             <FinalSketchDrawing />
+            <div className="px-6 pb-5">
+                <FigureSlider
+                    varName="finalSketchStep"
+                    label="Step"
+                    {...numberPropsFromDefinition(getVariableInfo("finalSketchStep"))}
+                    formatValue={(v) => STEP_NAMES[Math.round(v) - 1] ?? ""}
+                />
+            </div>
             <InteractionHintSequence
                 hintKey="final-sketch-drag"
                 steps={[
                     {
                         gesture: "drag-vertical",
                         label: "Drag each teal point onto the shape the clues demand",
-                        position: { x: "63%", y: "47%" },
+                        position: { x: "63%", y: "42%" },
                         dragPath: { type: "line", startOffset: { x: 0, y: 16 }, endOffset: { x: 0, y: -22 } },
                     },
                 ]}
@@ -281,9 +331,8 @@ export const graphSketchConclusionBlocks: ReactElement[] = [
     <StackLayout key="layout-sketch-conclusion-invite" maxWidth="xl">
         <Block id="sketch-conclusion-invite" padding="sm">
             <EditableParagraph id="para-sketch-conclusion-invite" blockId="sketch-conclusion-invite">
-                Every clue you gathered is waiting on the axes below: the turning points as rings, the
-                points of inflection as diamonds, and the horizontal asymptote along the dashed line. Drag
-                the five teal points until the curve obeys all of them.
+                Now put the whole method to work. Step the slider through all five stages below, and as
+                each clue lands, drag the five teal points until the curve obeys every one of them.
             </EditableParagraph>
         </Block>
     </StackLayout>,
