@@ -438,7 +438,7 @@ export const turningPointsBlocks: ReactElement[] = [
     <StackLayout key="layout-turning-points-heading" maxWidth="xl">
         <Block id="turning-points-heading" padding="md">
             <EditableH2 id="h2-turning-points-heading" blockId="turning-points-heading">
-                Where the Curve Turns
+                Stationary Points and Turning Points
             </EditableH2>
         </Block>
     </StackLayout>,
@@ -500,11 +500,12 @@ export const turningPointsBlocks: ReactElement[] = [
     <StackLayout key="layout-turning-points-reflect" maxWidth="xl">
         <Block id="turning-points-reflect" padding="sm">
             <EditableParagraph id="para-turning-points-reflect" blockId="turning-points-reflect">
-                A flat tangent means <InlineFormula latex="\frac{dy}{dx} = 0" colorMap={{}} />, and a
-                fraction is zero only when its numerator is zero. So{" "}
+                Where the tangent is flat the curve is stationary, so{" "}
+                <InlineFormula latex="\frac{dy}{dx} = 0" colorMap={{}} />, and a fraction is zero only when
+                its numerator is zero. So{" "}
                 <InlineFormula latex="-2(x-1)(x+1) = 0" colorMap={{}} /> gives{" "}
                 <InlineFormula latex="x = 1" colorMap={{}} /> and{" "}
-                <InlineFormula latex="x = -1" colorMap={{}} />, and the curve supplies the heights:{" "}
+                <InlineFormula latex="x = -1" colorMap={{}} />, and the curve supplies the y-coordinates of the two turning points:{" "}
                 <InlineLinkedHighlight
                     varName="curveHighlight"
                     highlightId="zeros"

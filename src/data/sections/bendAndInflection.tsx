@@ -138,7 +138,7 @@ function BendDrawing() {
                     {`d²y/dx² = ${formatBend(bend)}`}
                 </text>
                 <text x={VIEW_W - 24} y="54" fill={markerColor} textAnchor="end">
-                    {bendingUp ? "bends upward" : "bends downward"}
+                    {bendingUp ? "concave up" : "concave down"}
                 </text>
             </g>
 
@@ -264,7 +264,7 @@ function BendFigure() {
                 setVar("bendVisitedMax", DEFAULT_X);
                 setVar("bendHighlight", "");
             }}
-            caption="Drag the point from one end of the curve to the other. It paints the curve behind it, and the colour flips every time the bend changes direction."
+            caption="Drag the point from one end of the curve to the other. It paints the curve behind it, and the colour flips every time the concavity changes."
         >
             <BendDrawing />
             <div className="px-6 pb-5">
@@ -294,7 +294,7 @@ export const bendAndInflectionBlocks: ReactElement[] = [
     <StackLayout key="layout-bend-heading" maxWidth="xl">
         <Block id="bend-heading" padding="md">
             <EditableH2 id="h2-bend-heading" blockId="bend-heading">
-                Where the Curve Changes Its Bend
+                Concavity and Points of Inflection
             </EditableH2>
         </Block>
     </StackLayout>,
@@ -308,9 +308,9 @@ export const bendAndInflectionBlocks: ReactElement[] = [
     <StackLayout key="layout-bend-invite" maxWidth="xl">
         <Block id="bend-invite" padding="sm">
             <EditableParagraph id="para-bend-invite" blockId="bend-invite">
-                Rising and falling is only half the story, because a curve can climb while cupping upward
-                or while cupping downward. The second derivative is what tells those two apart. Drag the
-                point, now at <InlineScrubbleNumber
+                Increasing and decreasing is only half the story, because a curve can climb while curving
+                upward or while curving downward. That shape is its concavity, and the second derivative
+                measures it. Drag the point, now at <InlineScrubbleNumber
                     varName="bendX"
                     {...numberPropsFromDefinition(getVariableInfo("bendX"))}
                     formatValue={formatX}
@@ -334,7 +334,7 @@ export const bendAndInflectionBlocks: ReactElement[] = [
                     highlightId="up"
                     {...linkedHighlightPropsFromDefinition(getVariableInfo("bendHighlight"))}
                 >
-                    bending upward
+                    concave up
                 </InlineLinkedHighlight>{" "}
                 and{" "}
                 <InlineLinkedHighlight
@@ -343,11 +343,11 @@ export const bendAndInflectionBlocks: ReactElement[] = [
                     color={INDIGO}
                     bgColor="rgba(142, 144, 245, 0.22)"
                 >
-                    bending downward
+                    concave down
                 </InlineLinkedHighlight>{" "}
                 at <InlineFormula latex="x = -\sqrt{3}, \; 0, \; \sqrt{3}" colorMap={{}} />, exactly where
-                the numerator is zero. A zero on its own is not enough, though: each one counts as an
-                inflection point only because the sign genuinely changes on either side of it.
+                the numerator is zero. A zero on its own is not enough, though: each one is a point of
+                inflection only because the sign genuinely changes on either side of it.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -355,12 +355,12 @@ export const bendAndInflectionBlocks: ReactElement[] = [
     <StackLayout key="layout-bend-question-direction" maxWidth="xl">
         <Block id="bend-question-direction" padding="md">
             <EditableParagraph id="para-bend-question-direction" blockId="bend-question-direction">
-                At <InlineFormula latex="x = 1" colorMap={{}} />, this curve is bending{" "}
+                At <InlineFormula latex="x = 1" colorMap={{}} />, this curve is{" "}
                 <InlineFeedback
                     varName="bendDirection"
-                    correctValue="downward"
+                    correctValue="concave down"
                     position="terminal"
-                    successMessage="— yes, x = 1 sits between the zeros at 0 and √3, where the second derivative is negative"
+                    successMessage="— yes, x = 1 lies between the zeros at 0 and √3, where the second derivative is negative"
                     failureMessage="— take another look"
                     hint="Ask which two of the three zeros x = 1 lies between"
                     visualizationHint={{
@@ -379,7 +379,7 @@ export const bendAndInflectionBlocks: ReactElement[] = [
                             },
                             {
                                 gesture: "drag-horizontal",
-                                label: "Keep going to x = 1 and read the bend written above",
+                                label: "Keep going to x = 1 and read the concavity written above",
                                 position: { x: "55%", y: "40%" },
                                 completionVar: "bendX",
                                 completionValue: 1,
@@ -390,8 +390,8 @@ export const bendAndInflectionBlocks: ReactElement[] = [
                 >
                     <InlineClozeChoice
                         varName="bendDirection"
-                        correctAnswer="downward"
-                        options={["upward", "downward"]}
+                        correctAnswer="concave down"
+                        options={["concave up", "concave down"]}
                         {...choicePropsFromDefinition(getVariableInfo("bendDirection"))}
                     />
                 </InlineFeedback>.
@@ -402,8 +402,8 @@ export const bendAndInflectionBlocks: ReactElement[] = [
     <StackLayout key="layout-bend-question-count" maxWidth="xl">
         <Block id="bend-question-count" padding="md">
             <EditableParagraph id="para-bend-question-count" blockId="bend-question-count">
-                Counting only the zeros where the sign really does change, the number of inflection points
-                on this curve is{" "}
+                Counting only the zeros where the sign really does change, the number of points of
+                inflection on this curve is{" "}
                 <InlineFeedback
                     varName="inflectionCount"
                     correctValue={["3", "three"]}

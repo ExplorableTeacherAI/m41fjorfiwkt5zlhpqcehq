@@ -285,7 +285,7 @@ function SignTableFigure() {
                 setVar("signRight", "");
                 setVar("signTableHighlight", "");
             }}
-            caption="Click each tile to commit to a rising or a falling gradient. Once all three are set, the real curve and the test values appear underneath."
+            caption="Click each tile to commit to a positive or a negative gradient. Once all three are set, the real curve and the test values appear underneath."
         >
             <SignTableDrawing />
             <InteractionHintSequence
@@ -308,7 +308,7 @@ export const signTableBlocks: ReactElement[] = [
     <StackLayout key="layout-sign-table-heading" maxWidth="xl">
         <Block id="sign-table-heading" padding="md">
             <EditableH2 id="h2-sign-table-heading" blockId="sign-table-heading">
-                Building the Sign Table
+                Sign Table for the First Derivative
             </EditableH2>
         </Block>
     </StackLayout>,
@@ -324,9 +324,9 @@ export const signTableBlocks: ReactElement[] = [
                 >
                     three stretches
                 </InlineLinkedHighlight>
-                , and inside a stretch the gradient cannot change sign. That means one test value settles
-                the whole stretch. Commit first: click each tile to say whether you think the curve rises
-                or falls there.
+                , and inside a stretch the first derivative cannot change sign. That means one test value
+                settles the whole interval. Commit first: click each tile to say whether you think the
+                gradient there is positive or negative.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -341,8 +341,9 @@ export const signTableBlocks: ReactElement[] = [
         <Block id="sign-table-reflect" padding="sm">
             <EditableParagraph id="para-sign-table-reflect" blockId="sign-table-reflect">
                 Substituting <InlineFormula latex="x = -2, 0, 2" colorMap={{}} /> into the factorised
-                gradient decides all three stretches without plotting a single point. Guessing the shape
-                gets you two out of three on a good day. The sign test gets you all three, every time.
+                derivative fills in the sign table and settles all three intervals without plotting a
+                point. Guessing the shape gets you two out of three on a good day. The sign test gets you
+                all three, every time.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -352,8 +353,8 @@ export const signTableBlocks: ReactElement[] = [
             <EditableParagraph id="para-sign-table-question-sign" blockId="sign-table-question-sign">
                 Another curve has{" "}
                 <InlineFormula latex="\frac{dy}{dx} = \frac{3(x-2)(x+2)}{(1+x^2)^2}" colorMap={{}} />, with
-                turning points at <InlineFormula latex="x = 2" colorMap={{}} /> and{" "}
-                <InlineFormula latex="x = -2" colorMap={{}} />. Test the stretch between them with{" "}
+                stationary points at <InlineFormula latex="x = 2" colorMap={{}} /> and{" "}
+                <InlineFormula latex="x = -2" colorMap={{}} />. Test the interval between them with{" "}
                 <InlineFormula latex="x = 0" colorMap={{}} />: the gradient there is{" "}
                 <InlineFeedback
                     varName="signTableGradient"
@@ -379,22 +380,22 @@ export const signTableBlocks: ReactElement[] = [
     <StackLayout key="layout-sign-table-question-shape" maxWidth="xl">
         <Block id="sign-table-question-shape" padding="md">
             <EditableParagraph id="para-sign-table-question-shape" blockId="sign-table-question-shape">
-                So on its way from <InlineFormula latex="x = -2" colorMap={{}} /> to{" "}
-                <InlineFormula latex="x = 2" colorMap={{}} />, that curve{" "}
+                So on the interval from <InlineFormula latex="x = -2" colorMap={{}} /> to{" "}
+                <InlineFormula latex="x = 2" colorMap={{}} />, that curve is{" "}
                 <InlineFeedback
                     varName="signTableShape"
-                    correctValue="falls"
+                    correctValue="decreasing"
                     position="terminal"
-                    successMessage="— exactly, a negative gradient all the way across means the curve drops"
+                    successMessage="— exactly, a negative first derivative across an interval means the function is decreasing there"
                     failureMessage="— not quite"
-                    hint="A negative gradient across a whole stretch can only mean one thing about the height"
+                    hint="A negative first derivative across a whole interval can only mean one thing about the y-values"
                     reviewBlockId="sign-table-prediction"
                     reviewLabel="Back to the sign table"
                 >
                     <InlineClozeChoice
                         varName="signTableShape"
-                        correctAnswer="falls"
-                        options={["rises", "falls", "stays flat"]}
+                        correctAnswer="decreasing"
+                        options={["increasing", "decreasing", "constant"]}
                         {...choicePropsFromDefinition(getVariableInfo("signTableShape"))}
                     />
                 </InlineFeedback>.

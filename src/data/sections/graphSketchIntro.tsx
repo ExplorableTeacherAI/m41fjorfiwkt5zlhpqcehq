@@ -30,8 +30,8 @@ export const graphSketchIntroBlocks: ReactElement[] = [
                 The secret is that a curve describes itself, through its derivatives. You can already
                 differentiate a quotient, factorise what comes out, and read
                 {" "}<InlineFormula latex="\frac{dy}{dx}" colorMap={{}} /> as a gradient. Here you will turn
-                those three skills into a finished sketch: find where the curve turns, decide whether it
-                climbs or falls in between, and locate the points where it changes the way it bends.
+                those three skills into a finished sketch: locate the stationary points, decide where the
+                function is increasing or decreasing, and find its points of inflection.
             </EditableParagraph>
         </Block>
     </StackLayout>,
