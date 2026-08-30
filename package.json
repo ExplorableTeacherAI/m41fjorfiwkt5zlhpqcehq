@@ -2,7 +2,7 @@
   "name": "mathvibe",
   "private": true,
   "version": "1.0.0",
-  "homepage": "https://c16-no-edits-test.mathvibe.space/",
+  "homepage": "https://c16-no-edits.mathvibe.space/",
   "type": "module",
   "scripts": {
     "dev": "vite",
