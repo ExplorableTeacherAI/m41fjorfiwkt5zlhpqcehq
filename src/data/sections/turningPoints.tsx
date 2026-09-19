@@ -9,6 +9,7 @@ import {
     InlineFormula,
     InlineLinkedHighlight,
     InlineScrubbleNumber,
+    InlineTrigger,
     InteractionHintSequence,
 } from "@/components/atoms";
 import { Figure } from "@/components/molecules";
@@ -47,6 +48,14 @@ export const INK = "#334155";
 export const INK_STRUCTURE = "#64748B";
 export const INK_QUIET = "#CBD5E1";
 export const ACCENT = "#62D0AD";
+
+// Lesson-wide quantity colours: the same quantity wears the same hue in every
+// figure, formula and scrubbable number. ACCENT (teal) is x, the dragged point.
+export const GRADIENT = "#F7B23B"; // first derivative: tangent, dy/dx readout, zero line
+export const TURNING = "#F8A0CD"; // turning points and the zeros of the numerator
+export const VERTICAL_ASYMPTOTE = "#AC8BF9"; // roots of the denominator
+export const HORIZONTAL_ASYMPTOTE = "#62CCF9"; // the line y = 0
+export const CONSTANT_C = "#F4A89A"; // the constant c in the denominator
 
 const EASE_150 = { transition: "opacity 150ms ease, stroke-width 150ms ease" } as const;
 
@@ -104,13 +113,13 @@ function SharedReadouts({ x }: { x: number }) {
     const { opacity } = useCurveHighlight();
     return (
         <g fontSize="12" style={{ fontVariantNumeric: "tabular-nums", ...EASE_150 }}>
-            <text x="24" y="32" fill={INK} opacity={opacity("__structure")}>
+            <text x="24" y="32" fill={ACCENT} opacity={opacity("__structure")}>
                 {`x = ${formatX(x)}`}
             </text>
             <text
                 x={VIEW_W - 24}
                 y="32"
-                fill={ACCENT}
+                fill={GRADIENT}
                 textAnchor="end"
                 opacity={opacity("tangent")}
             >
@@ -248,7 +257,7 @@ function CurveDrawing() {
                         y1={pointY - uy}
                         x2={pointX + ux}
                         y2={pointY + uy}
-                        stroke={ACCENT}
+                        stroke={GRADIENT}
                         strokeWidth={weight("tangent", 3) + 6}
                         strokeLinecap="round"
                     />
@@ -258,7 +267,7 @@ function CurveDrawing() {
                     y1={pointY - uy}
                     x2={pointX + ux}
                     y2={pointY + uy}
-                    stroke={ACCENT}
+                    stroke={GRADIENT}
                     strokeWidth={weight("tangent", 3)}
                     strokeLinecap="round"
                 />
@@ -268,13 +277,13 @@ function CurveDrawing() {
             <g {...hoverProps("zeros")} opacity={opacity("zeros")} style={EASE_150} fontSize="11">
                 {foundRight && (
                     <>
-                        <circle cx={xFor(1)} cy={curveYFor(1)} r={isActive("zeros") ? 9 : 7} fill="none" stroke={ACCENT} strokeWidth={weight("zeros", 2.5)} />
+                        <circle cx={xFor(1)} cy={curveYFor(1)} r={isActive("zeros") ? 9 : 7} fill="none" stroke={TURNING} strokeWidth={weight("zeros", 2.5)} />
                         <text x={xFor(1) + 12} y={curveYFor(1) - 10} fill={INK} textAnchor="start">(1, 1)</text>
                     </>
                 )}
                 {foundLeft && (
                     <>
-                        <circle cx={xFor(-1)} cy={curveYFor(-1)} r={isActive("zeros") ? 9 : 7} fill="none" stroke={ACCENT} strokeWidth={weight("zeros", 2.5)} />
+                        <circle cx={xFor(-1)} cy={curveYFor(-1)} r={isActive("zeros") ? 9 : 7} fill="none" stroke={TURNING} strokeWidth={weight("zeros", 2.5)} />
                         <text x={xFor(-1) - 12} y={curveYFor(-1) + 20} fill={INK} textAnchor="end">{"(−1, −1)"}</text>
                     </>
                 )}
@@ -344,20 +353,20 @@ function GradientDrawing() {
             {/* ZERO LINE — the counterpart of the flat tangent next door. */}
             <g {...hoverProps("tangent")} opacity={opacity("tangent")} style={EASE_150}>
                 <Halo active={isActive("tangent")}>
-                    <line x1={PLOT_LEFT} y1={GRAD_ZERO_Y} x2={PLOT_RIGHT} y2={GRAD_ZERO_Y} stroke={ACCENT} strokeWidth={weight("tangent", 2.5) + 6} strokeLinecap="round" />
+                    <line x1={PLOT_LEFT} y1={GRAD_ZERO_Y} x2={PLOT_RIGHT} y2={GRAD_ZERO_Y} stroke={GRADIENT} strokeWidth={weight("tangent", 2.5) + 6} strokeLinecap="round" />
                 </Halo>
-                <line x1={PLOT_LEFT} y1={GRAD_ZERO_Y} x2={PLOT_RIGHT} y2={GRAD_ZERO_Y} stroke={ACCENT} strokeWidth={weight("tangent", 2.5)} strokeLinecap="round" />
-                <text x={PLOT_LEFT} y={GRAD_ZERO_Y - 10} fill={ACCENT} fontSize="12" textAnchor="start">
+                <line x1={PLOT_LEFT} y1={GRAD_ZERO_Y} x2={PLOT_RIGHT} y2={GRAD_ZERO_Y} stroke={GRADIENT} strokeWidth={weight("tangent", 2.5)} strokeLinecap="round" />
+                <text x={PLOT_LEFT} y={GRAD_ZERO_Y - 10} fill={GRADIENT} fontSize="12" textAnchor="start">
                     dy/dx = 0
                 </text>
             </g>
 
             <g {...hoverProps("zeros")} opacity={opacity("zeros")} style={EASE_150}>
                 {foundRight && (
-                    <circle cx={xFor(1)} cy={GRAD_ZERO_Y} r={isActive("zeros") ? 9 : 7} fill="none" stroke={ACCENT} strokeWidth={weight("zeros", 2.5)} />
+                    <circle cx={xFor(1)} cy={GRAD_ZERO_Y} r={isActive("zeros") ? 9 : 7} fill="none" stroke={TURNING} strokeWidth={weight("zeros", 2.5)} />
                 )}
                 {foundLeft && (
-                    <circle cx={xFor(-1)} cy={GRAD_ZERO_Y} r={isActive("zeros") ? 9 : 7} fill="none" stroke={ACCENT} strokeWidth={weight("zeros", 2.5)} />
+                    <circle cx={xFor(-1)} cy={GRAD_ZERO_Y} r={isActive("zeros") ? 9 : 7} fill="none" stroke={TURNING} strokeWidth={weight("zeros", 2.5)} />
                 )}
             </g>
 
@@ -387,7 +396,7 @@ function CurveFigure() {
                 setVar("foundTurningLeft", false);
                 setVar("foundTurningRight", false);
             }}
-            caption="Drag the teal point along the curve. The short teal line is the tangent, and it tilts with the gradient."
+            caption="Drag the teal point along the curve. The short amber line is the tangent, and it tilts with the gradient."
         >
             <CurveDrawing />
             <InteractionHintSequence
@@ -454,12 +463,13 @@ export const turningPointsBlocks: ReactElement[] = [
     <StackLayout key="layout-turning-points-formula" maxWidth="xl">
         <Block id="turning-points-formula" padding="lg">
             <FormulaBlock
-                latex="\frac{dy}{dx} = \frac{\highlight{zeros}{-2(x-1)(x+1)}}{(1+x^2)^2}"
+                latex="\clr{grad}{\frac{dy}{dx}} = \frac{\highlight{zeros}{-2(x-1)(x+1)}}{(1+\clr{x}{x}^2)^2}"
+                colorMap={{ grad: GRADIENT, x: ACCENT }}
                 linkedHighlights={{
                     zeros: {
                         varName: "curveHighlight",
-                        color: ACCENT,
-                        bgColor: "rgba(98, 208, 173, 0.22)",
+                        color: TURNING,
+                        bgColor: "rgba(248, 160, 205, 0.22)",
                     },
                 }}
             />
@@ -470,7 +480,7 @@ export const turningPointsBlocks: ReactElement[] = [
         <Block id="turning-points-invite" padding="sm">
             <EditableParagraph id="para-turning-points-invite" blockId="turning-points-invite">
                 On the left sits the curve; on the right, that gradient plotted against the same
-                {" "}<InlineFormula latex="x" colorMap={{}} />. Drag the teal point along the curve, now
+                {" "}<InlineFormula latex="\clr{x}{x}" colorMap={{ x: ACCENT }} />. Drag the teal point along the curve, now
                 at <InlineScrubbleNumber
                     varName="curveX"
                     {...numberPropsFromDefinition(getVariableInfo("curveX"))}
@@ -480,6 +490,8 @@ export const turningPointsBlocks: ReactElement[] = [
                     varName="curveHighlight"
                     highlightId="tangent"
                     {...linkedHighlightPropsFromDefinition(getVariableInfo("curveHighlight"))}
+                    color={GRADIENT}
+                    bgColor="rgba(247, 178, 59, 0.22)"
                 >
                     tangent
                 </InlineLinkedHighlight>{" "}
@@ -500,16 +512,22 @@ export const turningPointsBlocks: ReactElement[] = [
     <StackLayout key="layout-turning-points-reflect" maxWidth="xl">
         <Block id="turning-points-reflect" padding="sm">
             <EditableParagraph id="para-turning-points-reflect" blockId="turning-points-reflect">
-                Where the tangent is flat the curve is stationary, so{" "}
-                <InlineFormula latex="\frac{dy}{dx} = 0" colorMap={{}} />, and a fraction is zero only when
+                Where the{" "}
+                <InlineTrigger id="trigger-turning-points-flat-tangent" varName="curveX" value={1} icon="zap">
+                    tangent is flat
+                </InlineTrigger>{" "}
+                the curve is stationary, so{" "}
+                <InlineFormula latex="\clr{grad}{\frac{dy}{dx}} = 0" colorMap={{ grad: GRADIENT }} />, and a fraction is zero only when
                 its numerator is zero. So{" "}
-                <InlineFormula latex="-2(x-1)(x+1) = 0" colorMap={{}} /> gives{" "}
-                <InlineFormula latex="x = 1" colorMap={{}} /> and{" "}
-                <InlineFormula latex="x = -1" colorMap={{}} />, and the curve supplies the y-coordinates of the two turning points:{" "}
+                <InlineFormula latex="\clr{turn}{-2(x-1)(x+1)} = 0" colorMap={{ turn: TURNING }} /> gives{" "}
+                <InlineFormula latex="\clr{x}{x} = \clr{turn}{1}" colorMap={{ x: ACCENT, turn: TURNING }} /> and{" "}
+                <InlineFormula latex="\clr{x}{x} = \clr{turn}{-1}" colorMap={{ x: ACCENT, turn: TURNING }} />, and the curve supplies the y-coordinates of the two turning points:{" "}
                 <InlineLinkedHighlight
                     varName="curveHighlight"
                     highlightId="zeros"
                     {...linkedHighlightPropsFromDefinition(getVariableInfo("curveHighlight"))}
+                    color={TURNING}
+                    bgColor="rgba(248, 160, 205, 0.22)"
                 >
                     (1, 1) and (&minus;1, &minus;1)
                 </InlineLinkedHighlight>
@@ -521,10 +539,10 @@ export const turningPointsBlocks: ReactElement[] = [
     <StackLayout key="layout-turning-points-question" maxWidth="xl">
         <Block id="turning-points-question" padding="md">
             <EditableParagraph id="para-turning-points-question" blockId="turning-points-question">
-                Now a different curve. For <InlineFormula latex="y = \frac{3x}{4 + x^2}" colorMap={{}} />{" "}
+                Now a different curve. For <InlineFormula latex="y = \frac{3\clr{x}{x}}{4 + \clr{x}{x}^2}" colorMap={{ x: ACCENT }} />{" "}
                 the gradient factorises as{" "}
-                <InlineFormula latex="\frac{dy}{dx} = \frac{3(2-x)(2+x)}{(4+x^2)^2}" colorMap={{}} />, so its
-                turning points sit at <InlineFormula latex="x = \pm" colorMap={{}} />{" "}
+                <InlineFormula latex="\clr{grad}{\frac{dy}{dx}} = \frac{\clr{turn}{3(2-x)(2+x)}}{(4+\clr{x}{x}^2)^2}" colorMap={{ grad: GRADIENT, turn: TURNING, x: ACCENT }} />, so its
+                turning points sit at <InlineFormula latex="\clr{x}{x} = \pm" colorMap={{ x: ACCENT }} />{" "}
                 <InlineFeedback
                     varName="turningPointX"
                     correctValue={["2", "+-2", "±2", "2 and -2", "2, -2"]}

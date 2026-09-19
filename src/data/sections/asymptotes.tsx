@@ -9,9 +9,10 @@ import {
     InlineFormula,
     InlineLinkedHighlight,
     InlineScrubbleNumber,
+    InlineTrigger,
     InteractionHintSequence,
 } from "@/components/atoms";
-import { Figure, FigureSlider } from "@/components/molecules";
+import { Figure, FigureSlider, FormulaBlock } from "@/components/molecules";
 import { useVar, useSetVar } from "@/stores";
 import { clamp, remap, useSpring, type Vec2 } from "@/lib/motion";
 import {
@@ -19,8 +20,18 @@ import {
     getVariableInfo,
     linkedHighlightPropsFromDefinition,
     numberPropsFromDefinition,
+    scrubVarsFromDefinitions,
 } from "../variables";
-import { ACCENT, INK, INK_QUIET, INK_STRUCTURE, formatX } from "./turningPoints";
+import {
+    ACCENT,
+    CONSTANT_C,
+    HORIZONTAL_ASYMPTOTE,
+    INK,
+    INK_QUIET,
+    INK_STRUCTURE,
+    VERTICAL_ASYMPTOTE,
+    formatX,
+} from "./turningPoints";
 
 // ── The model: y = 2x / (x^2 + c) ────────────────────────────────────────────
 
@@ -108,11 +119,11 @@ function SharedReadouts({ probeX, c }: { probeX: number; c: number }) {
     const undefinedHere = Math.abs(d) < 0.03;
     return (
         <g fontSize="12" style={{ fontVariantNumeric: "tabular-nums", ...EASE_150 }} opacity={opacity("__readout")}>
-            <text x="24" y="32" fill={INK}>{`x = ${formatX(probeX)}`}</text>
+            <text x="24" y="32" fill={ACCENT}>{`x = ${formatX(probeX)}`}</text>
             <text x={VIEW_W - 24} y="32" fill={INK} textAnchor="end">
                 {`x² + c = ${formatValue(d)}`}
             </text>
-            <text x={VIEW_W - 24} y="52" fill={ACCENT} textAnchor="end">
+            <text x={VIEW_W - 24} y="52" fill={INK_STRUCTURE} textAnchor="end">
                 {undefinedHere ? "y is undefined" : `y = ${formatValue(rationalY(probeX, c))}`}
             </text>
         </g>
@@ -127,7 +138,7 @@ function RootLabel({ c }: { c: number }) {
         <text
             x={xFor(0)}
             y={68}
-            fill={ACCENT}
+            fill={VERTICAL_ASYMPTOTE}
             fontSize="11"
             textAnchor="middle"
             opacity={opacity("roots")}
@@ -202,17 +213,17 @@ function DenominatorDrawing() {
                     {(root < 0.03 ? [0] : [-root, root]).map((r) => (
                         <g key={`root-${r.toFixed(3)}`}>
                             {isActive("roots") && (
-                                <line x1={xFor(r)} y1={96} x2={xFor(r)} y2={264} stroke={ACCENT} strokeWidth={weight("roots", 2) + 6} opacity={0.28} strokeLinecap="round" />
+                                <line x1={xFor(r)} y1={96} x2={xFor(r)} y2={264} stroke={VERTICAL_ASYMPTOTE} strokeWidth={weight("roots", 2) + 6} opacity={0.28} strokeLinecap="round" />
                             )}
-                            <line x1={xFor(r)} y1={96} x2={xFor(r)} y2={264} stroke={ACCENT} strokeWidth={weight("roots", 2)} strokeDasharray="5 5" strokeLinecap="round" style={EASE_150} />
-                            <circle cx={xFor(r)} cy={A_AXIS_Y} r={isActive("roots") ? 7 : 5} fill="#FFFFFF" stroke={ACCENT} strokeWidth="2.5" style={EASE_150} />
+                            <line x1={xFor(r)} y1={96} x2={xFor(r)} y2={264} stroke={VERTICAL_ASYMPTOTE} strokeWidth={weight("roots", 2)} strokeDasharray="5 5" strokeLinecap="round" style={EASE_150} />
+                            <circle cx={xFor(r)} cy={A_AXIS_Y} r={isActive("roots") ? 7 : 5} fill="#FFFFFF" stroke={VERTICAL_ASYMPTOTE} strokeWidth="2.5" style={EASE_150} />
                         </g>
                     ))}
                 </g>
             )}
 
             <g transform={`translate(${xFor(0)} ${vertexY}) scale(${handleScale})`}>
-                <circle r="8" fill={ACCENT} filter="url(#asymptote-vertex-shadow)" />
+                <circle r="8" fill={CONSTANT_C} filter="url(#asymptote-vertex-shadow)" />
             </g>
             <circle
                 cx={xFor(0)}
@@ -296,20 +307,20 @@ function RationalCurveDrawing() {
             {/* HORIZONTAL ASYMPTOTE — the line the curve flattens onto. */}
             <g {...hoverProps("horizontal")} opacity={opacity("horizontal")} style={EASE_150}>
                 {isActive("horizontal") && (
-                    <line x1={PLOT_LEFT} y1={B_AXIS_Y} x2={PLOT_RIGHT} y2={B_AXIS_Y} stroke={ACCENT} strokeWidth={weight("horizontal", 2) + 6} opacity={0.28} strokeLinecap="round" />
+                    <line x1={PLOT_LEFT} y1={B_AXIS_Y} x2={PLOT_RIGHT} y2={B_AXIS_Y} stroke={HORIZONTAL_ASYMPTOTE} strokeWidth={weight("horizontal", 2) + 6} opacity={0.28} strokeLinecap="round" />
                 )}
                 <line
                     x1={PLOT_LEFT}
                     y1={B_AXIS_Y}
                     x2={PLOT_RIGHT}
                     y2={B_AXIS_Y}
-                    stroke={isActive("horizontal") ? ACCENT : INK_QUIET}
+                    stroke={HORIZONTAL_ASYMPTOTE}
                     strokeWidth={weight("horizontal", 1.5)}
                     strokeDasharray="5 5"
                     strokeLinecap="round"
                     style={EASE_150}
                 />
-                <text x={PLOT_RIGHT} y={B_AXIS_Y + 16} fill={isActive("horizontal") ? ACCENT : INK} fontSize="11" textAnchor="end" style={EASE_150}>
+                <text x={PLOT_RIGHT} y={B_AXIS_Y + 16} fill={HORIZONTAL_ASYMPTOTE} fontSize="11" textAnchor="end" style={EASE_150}>
                     y = 0
                 </text>
             </g>
@@ -323,9 +334,9 @@ function RationalCurveDrawing() {
                     {(root < 0.03 ? [0] : [-root, root]).map((r) => (
                         <g key={`asym-${r.toFixed(3)}`}>
                             {isActive("roots") && (
-                                <line x1={xFor(r)} y1={76} x2={xFor(r)} y2={276} stroke={ACCENT} strokeWidth={weight("roots", 2) + 6} opacity={0.28} strokeLinecap="round" />
+                                <line x1={xFor(r)} y1={76} x2={xFor(r)} y2={276} stroke={VERTICAL_ASYMPTOTE} strokeWidth={weight("roots", 2) + 6} opacity={0.28} strokeLinecap="round" />
                             )}
-                            <line x1={xFor(r)} y1={76} x2={xFor(r)} y2={276} stroke={ACCENT} strokeWidth={weight("roots", 2)} strokeDasharray="5 5" strokeLinecap="round" style={EASE_150} />
+                            <line x1={xFor(r)} y1={76} x2={xFor(r)} y2={276} stroke={VERTICAL_ASYMPTOTE} strokeWidth={weight("roots", 2)} strokeDasharray="5 5" strokeLinecap="round" style={EASE_150} />
                         </g>
                     ))}
                 </g>
@@ -434,6 +445,25 @@ function RationalCurveFigure() {
     );
 }
 
+// ── Live formula: the same c the vertex and the slider drive ─────────────────
+
+function RationalFormula() {
+    const c = useVar<number>("asymptoteC", DEFAULT_C);
+    const sign = c < 0 ? "-" : "+";
+    return (
+        <FormulaBlock
+            latex={`y = \\frac{2\\clr{x}{x}}{\\clr{x}{x}^2 ${sign} \\scrub{asymptoteC}}`}
+            colorMap={{ x: ACCENT }}
+            variables={{
+                asymptoteC: {
+                    ...scrubVarsFromDefinitions(["asymptoteC"]).asymptoteC,
+                    formatValue: (v: number) => Math.abs(v).toFixed(2),
+                },
+            }}
+        />
+    );
+}
+
 // ── Blocks ───────────────────────────────────────────────────────────────────
 
 export const asymptoteBlocks: ReactElement[] = [
@@ -450,10 +480,16 @@ export const asymptoteBlocks: ReactElement[] = [
             <EditableParagraph id="para-asymptote-invite" blockId="asymptote-invite">
                 A fraction explodes when its denominator hits zero, and that is the whole story behind a
                 vertical asymptote. On the left is the denominator{" "}
-                <InlineFormula latex="x^2 + c" colorMap={{}} />; on the right, the curve{" "}
-                <InlineFormula latex="y = \frac{2x}{x^2 + c}" colorMap={{}} /> that sits above it. Drag the
+                <InlineFormula latex="\clr{x}{x}^2 + \clr{cval}{c}" colorMap={{ x: ACCENT, cval: CONSTANT_C }} />; on the right, the curve{" "}
+                <InlineFormula latex="y = \frac{2\clr{x}{x}}{\clr{x}{x}^2 + \clr{cval}{c}}" colorMap={{ x: ACCENT, cval: CONSTANT_C }} /> that sits above it. Drag the
                 parabola's vertex down and watch the moment it crosses the axis.
             </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-asymptote-formula" maxWidth="xl">
+        <Block id="asymptote-formula" padding="lg">
+            <RationalFormula />
         </Block>
     </StackLayout>,
 
@@ -474,17 +510,27 @@ export const asymptoteBlocks: ReactElement[] = [
                     varName="asymptoteHighlight"
                     highlightId="roots"
                     {...linkedHighlightPropsFromDefinition(getVariableInfo("asymptoteHighlight"))}
+                    color={VERTICAL_ASYMPTOTE}
+                    bgColor="rgba(172, 139, 249, 0.22)"
                 >
                     real roots
                 </InlineLinkedHighlight>
-                , the curve tears into branches that race away beside the dashed lines. At{" "}
-                <InlineFormula latex="c =" colorMap={{}} />{" "}
+                , the curve{" "}
+                <InlineTrigger id="trigger-asymptote-tears" varName="asymptoteC" value={-1} icon="zap">
+                    tears into branches
+                </InlineTrigger>{" "}
+                that race away beside the dashed lines. At{" "}
+                <InlineFormula latex="\clr{cval}{c} =" colorMap={{ cval: CONSTANT_C }} />{" "}
                 <InlineScrubbleNumber
                     varName="asymptoteC"
                     {...numberPropsFromDefinition(getVariableInfo("asymptoteC"))}
                     formatValue={formatX}
                 />{" "}
-                there are no real roots, which is exactly why our curve has no vertical asymptotes.
+                there are no real roots, which is exactly why{" "}
+                <InlineTrigger id="trigger-asymptote-our-curve" varName="asymptoteC" value={1} icon="refresh">
+                    our curve
+                </InlineTrigger>{" "}
+                has no vertical asymptotes.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -493,16 +539,18 @@ export const asymptoteBlocks: ReactElement[] = [
         <Block id="asymptote-horizontal-note" padding="sm">
             <EditableParagraph id="para-asymptote-horizontal-note" blockId="asymptote-horizontal-note">
                 Far out to the sides the denominator grows like{" "}
-                <InlineFormula latex="x^2" colorMap={{}} /> while the numerator only grows like{" "}
-                <InlineFormula latex="x" colorMap={{}} />, so the curve flattens onto the{" "}
+                <InlineFormula latex="\clr{x}{x}^2" colorMap={{ x: ACCENT }} /> while the numerator only grows like{" "}
+                <InlineFormula latex="\clr{x}{x}" colorMap={{ x: ACCENT }} />, so the curve flattens onto the{" "}
                 <InlineLinkedHighlight
                     varName="asymptoteHighlight"
                     highlightId="horizontal"
                     {...linkedHighlightPropsFromDefinition(getVariableInfo("asymptoteHighlight"))}
+                    color={HORIZONTAL_ASYMPTOTE}
+                    bgColor="rgba(98, 204, 249, 0.22)"
                 >
                     horizontal asymptote
                 </InlineLinkedHighlight>{" "}
-                <InlineFormula latex="y = 0" colorMap={{}} />.
+                <InlineFormula latex="\clr{flat}{y = 0}" colorMap={{ flat: HORIZONTAL_ASYMPTOTE }} />.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -510,9 +558,9 @@ export const asymptoteBlocks: ReactElement[] = [
     <StackLayout key="layout-asymptote-question-vertical" maxWidth="xl">
         <Block id="asymptote-question-vertical" padding="md">
             <EditableParagraph id="para-asymptote-question-vertical" blockId="asymptote-question-vertical">
-                Try it on <InlineFormula latex="y = \frac{x+1}{x^2 - 9}" colorMap={{}} />. Its vertical
+                Try it on <InlineFormula latex="y = \frac{\clr{x}{x}+1}{\clr{asym}{x^2 - 9}}" colorMap={{ x: ACCENT, asym: VERTICAL_ASYMPTOTE }} />. Its vertical
                 asymptotes stand wherever the denominator is zero, so at{" "}
-                <InlineFormula latex="x = \pm" colorMap={{}} />{" "}
+                <InlineFormula latex="\clr{x}{x} = \pm" colorMap={{ x: ACCENT }} />{" "}
                 <InlineFeedback
                     varName="asymptoteVerticalAnswer"
                     correctValue={["3", "+-3", "±3", "3 and -3", "3, -3"]}
@@ -558,9 +606,9 @@ export const asymptoteBlocks: ReactElement[] = [
     <StackLayout key="layout-asymptote-question-horizontal" maxWidth="xl">
         <Block id="asymptote-question-horizontal" padding="md">
             <EditableParagraph id="para-asymptote-question-horizontal" blockId="asymptote-question-horizontal">
-                As <InlineFormula latex="x" colorMap={{}} /> runs off to infinity,{" "}
-                <InlineFormula latex="y = \frac{5x}{x^2 + 4}" colorMap={{}} /> settles onto the horizontal
-                line <InlineFormula latex="y =" colorMap={{}} />{" "}
+                As <InlineFormula latex="\clr{x}{x}" colorMap={{ x: ACCENT }} /> runs off to infinity,{" "}
+                <InlineFormula latex="y = \frac{5\clr{x}{x}}{\clr{x}{x}^2 + 4}" colorMap={{ x: ACCENT }} /> settles onto the horizontal
+                line <InlineFormula latex="\clr{flat}{y} =" colorMap={{ flat: HORIZONTAL_ASYMPTOTE }} />{" "}
                 <InlineFeedback
                     varName="asymptoteHorizontalAnswer"
                     correctValue={["0", "y=0", "y = 0"]}

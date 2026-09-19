@@ -301,7 +301,10 @@ export const bendAndInflectionBlocks: ReactElement[] = [
 
     <StackLayout key="layout-bend-formula" maxWidth="xl">
         <Block id="bend-formula" padding="lg">
-            <FormulaBlock latex="\frac{d^2y}{dx^2} = \frac{4x(x-\sqrt{3})(x+\sqrt{3})}{(1+x^2)^3}" />
+            <FormulaBlock
+                latex="\frac{d^2y}{dx^2} = \frac{4\clr{x}{x}(\clr{x}{x}-\sqrt{3})(\clr{x}{x}+\sqrt{3})}{(1+\clr{x}{x}^2)^3}"
+                colorMap={{ x: ACCENT }}
+            />
         </Block>
     </StackLayout>,
 
@@ -345,7 +348,7 @@ export const bendAndInflectionBlocks: ReactElement[] = [
                 >
                     concave down
                 </InlineLinkedHighlight>{" "}
-                at <InlineFormula latex="x = -\sqrt{3}, \; 0, \; \sqrt{3}" colorMap={{}} />, exactly where
+                at <InlineFormula latex="\clr{x}{x} = -\sqrt{3}, \; 0, \; \sqrt{3}" colorMap={{ x: ACCENT }} />, exactly where
                 the numerator is zero. A zero on its own is not enough, though: each one is a point of
                 inflection only because the sign genuinely changes on either side of it.
             </EditableParagraph>
@@ -355,7 +358,7 @@ export const bendAndInflectionBlocks: ReactElement[] = [
     <StackLayout key="layout-bend-question-direction" maxWidth="xl">
         <Block id="bend-question-direction" padding="md">
             <EditableParagraph id="para-bend-question-direction" blockId="bend-question-direction">
-                At <InlineFormula latex="x = 1" colorMap={{}} />, this curve is{" "}
+                At <InlineFormula latex="\clr{x}{x} = 1" colorMap={{ x: ACCENT }} />, this curve is{" "}
                 <InlineFeedback
                     varName="bendDirection"
                     correctValue="concave down"

@@ -19,9 +19,11 @@ import {
 } from "../variables";
 import {
     ACCENT,
+    GRADIENT,
     INK,
     INK_QUIET,
     INK_STRUCTURE,
+    TURNING,
     curveGradient,
     curveY,
     formatSigned,
@@ -340,7 +342,7 @@ export const signTableBlocks: ReactElement[] = [
     <StackLayout key="layout-sign-table-reflect" maxWidth="xl">
         <Block id="sign-table-reflect" padding="sm">
             <EditableParagraph id="para-sign-table-reflect" blockId="sign-table-reflect">
-                Substituting <InlineFormula latex="x = -2, 0, 2" colorMap={{}} /> into the factorised
+                Substituting <InlineFormula latex="\clr{x}{x} = -2, 0, 2" colorMap={{ x: ACCENT }} /> into the factorised
                 derivative fills in the sign table and settles all three intervals without plotting a
                 point. Guessing the shape gets you two out of three on a good day. The sign test gets you
                 all three, every time.
@@ -352,10 +354,10 @@ export const signTableBlocks: ReactElement[] = [
         <Block id="sign-table-question-sign" padding="md">
             <EditableParagraph id="para-sign-table-question-sign" blockId="sign-table-question-sign">
                 Another curve has{" "}
-                <InlineFormula latex="\frac{dy}{dx} = \frac{3(x-2)(x+2)}{(1+x^2)^2}" colorMap={{}} />, with
-                stationary points at <InlineFormula latex="x = 2" colorMap={{}} /> and{" "}
-                <InlineFormula latex="x = -2" colorMap={{}} />. Test the interval between them with{" "}
-                <InlineFormula latex="x = 0" colorMap={{}} />: the gradient there is{" "}
+                <InlineFormula latex="\clr{grad}{\frac{dy}{dx}} = \frac{\clr{turn}{3(x-2)(x+2)}}{(1+\clr{x}{x}^2)^2}" colorMap={{ grad: GRADIENT, turn: TURNING, x: ACCENT }} />, with
+                stationary points at <InlineFormula latex="\clr{x}{x} = \clr{turn}{2}" colorMap={{ x: ACCENT, turn: TURNING }} /> and{" "}
+                <InlineFormula latex="\clr{x}{x} = \clr{turn}{-2}" colorMap={{ x: ACCENT, turn: TURNING }} />. Test the interval between them with{" "}
+                <InlineFormula latex="\clr{x}{x} = 0" colorMap={{ x: ACCENT }} />: the gradient there is{" "}
                 <InlineFeedback
                     varName="signTableGradient"
                     correctValue="negative"
@@ -380,8 +382,8 @@ export const signTableBlocks: ReactElement[] = [
     <StackLayout key="layout-sign-table-question-shape" maxWidth="xl">
         <Block id="sign-table-question-shape" padding="md">
             <EditableParagraph id="para-sign-table-question-shape" blockId="sign-table-question-shape">
-                So on the interval from <InlineFormula latex="x = -2" colorMap={{}} /> to{" "}
-                <InlineFormula latex="x = 2" colorMap={{}} />, that curve is{" "}
+                So on the interval from <InlineFormula latex="\clr{x}{x} = \clr{turn}{-2}" colorMap={{ x: ACCENT, turn: TURNING }} /> to{" "}
+                <InlineFormula latex="\clr{x}{x} = \clr{turn}{2}" colorMap={{ x: ACCENT, turn: TURNING }} />, that curve is{" "}
                 <InlineFeedback
                     varName="signTableShape"
                     correctValue="decreasing"

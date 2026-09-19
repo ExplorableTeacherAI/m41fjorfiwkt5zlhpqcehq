@@ -5,12 +5,22 @@ import {
     EditableH2,
     EditableParagraph,
     InlineFormula,
+    InlineTrigger,
     InteractionHintSequence,
 } from "@/components/atoms";
 import { Figure, FigureSlider } from "@/components/molecules";
 import { useVar, useSetVar } from "@/stores";
 import { clamp, useSpring, type Vec2 } from "@/lib/motion";
-import { ACCENT, INK, INK_QUIET, INK_STRUCTURE, curveY } from "./turningPoints";
+import {
+    ACCENT,
+    GRADIENT,
+    HORIZONTAL_ASYMPTOTE,
+    INK,
+    INK_QUIET,
+    INK_STRUCTURE,
+    TURNING,
+    curveY,
+} from "./turningPoints";
 import { getVariableInfo, numberPropsFromDefinition } from "../variables";
 
 const STEP_NAMES = [
@@ -146,7 +156,7 @@ function DirectionArrow({ cx, cy, rising }: { cx: number; cy: number; rising: bo
     const tipY = cy + dy;
     const back = rising ? [[tipX - 8, tipY + 1], [tipX - 1, tipY + 8]] : [[tipX - 8, tipY - 1], [tipX - 1, tipY - 8]];
     return (
-        <g stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" fill="none">
+        <g stroke={GRADIENT} strokeWidth="2" strokeLinecap="round" fill="none">
             <line x1={cx - 14} y1={cy - dy} x2={tipX} y2={tipY} />
             <polyline points={`${back[0][0]},${back[0][1]} ${tipX},${tipY} ${back[1][0]},${back[1][1]}`} strokeLinejoin="round" />
         </g>
@@ -197,12 +207,12 @@ function FinalSketchDrawing() {
                 y1={AXIS_Y}
                 x2={PLOT_RIGHT}
                 y2={AXIS_Y}
-                stroke={INK_QUIET}
+                stroke={step >= 2 ? HORIZONTAL_ASYMPTOTE : INK_QUIET}
                 strokeWidth="1.5"
                 strokeDasharray="5 5"
             />
             {step >= 2 && (
-                <text x={PLOT_RIGHT} y={AXIS_Y + 18} fill={INK} fontSize="11" textAnchor="end">
+                <text x={PLOT_RIGHT} y={AXIS_Y + 18} fill={HORIZONTAL_ASYMPTOTE} fontSize="11" textAnchor="end">
                     y = 0
                 </text>
             )}
@@ -232,11 +242,11 @@ function FinalSketchDrawing() {
 
             {/* Step 1 — the turning points. */}
             <g>
-                <circle cx={xFor(1)} cy={yFor(1)} r="8" fill="none" stroke={INK_STRUCTURE} strokeWidth="2" />
+                <circle cx={xFor(1)} cy={yFor(1)} r="8" fill="none" stroke={TURNING} strokeWidth="2" />
                 <text x={xFor(1) + 14} y={yFor(1) - 12} fill={INK} fontSize="11" textAnchor="start">
                     (1, 1)
                 </text>
-                <circle cx={xFor(-1)} cy={yFor(-1)} r="8" fill="none" stroke={INK_STRUCTURE} strokeWidth="2" />
+                <circle cx={xFor(-1)} cy={yFor(-1)} r="8" fill="none" stroke={TURNING} strokeWidth="2" />
                 <text x={xFor(-1) - 14} y={yFor(-1) + 20} fill={INK} fontSize="11" textAnchor="end">
                     {"(−1, −1)"}
                 </text>
@@ -319,7 +329,7 @@ export const graphSketchConclusionBlocks: ReactElement[] = [
         <Block id="sketch-conclusion-routine" padding="sm">
             <EditableParagraph id="para-sketch-conclusion-routine" blockId="sketch-conclusion-routine">
                 A sketch is never a guess. Differentiate and factorise; set the numerator of
-                {" "}<InlineFormula latex="\frac{dy}{dx}" colorMap={{}} /> to zero for the stationary points
+                {" "}<InlineFormula latex="\clr{grad}{\frac{dy}{dx}}" colorMap={{ grad: GRADIENT }} /> to zero for the stationary points
                 and its denominator to zero for the vertical asymptotes; build a sign table for every
                 interval in between; then repeat that sign test on{" "}
                 <InlineFormula latex="\frac{d^2y}{dx^2}" colorMap={{}} /> to locate the points of
@@ -346,10 +356,14 @@ export const graphSketchConclusionBlocks: ReactElement[] = [
     <StackLayout key="layout-sketch-conclusion-payoff" maxWidth="xl">
         <Block id="sketch-conclusion-payoff" padding="sm">
             <EditableParagraph id="para-sketch-conclusion-payoff" blockId="sketch-conclusion-payoff">
-                The curve you built, <InlineFormula latex="y = \frac{2x}{1+x^2}" colorMap={{}} />, is
+                The{" "}
+                <InlineTrigger id="trigger-sketch-conclusion-finished" varName="finalSketchStep" value={5} icon="zap">
+                    curve you built
+                </InlineTrigger>
+                , <InlineFormula latex="y = \frac{2\clr{x}{x}}{1+\clr{x}{x}^2}" colorMap={{ x: ACCENT }} />, is
                 decreasing on both outer intervals, increasing between{" "}
-                <InlineFormula latex="(-1, -1)" colorMap={{}} /> and{" "}
-                <InlineFormula latex="(1, 1)" colorMap={{}} />, and changes concavity three times. Not one
+                <InlineFormula latex="\clr{turn}{(-1, -1)}" colorMap={{ turn: TURNING }} /> and{" "}
+                <InlineFormula latex="\clr{turn}{(1, 1)}" colorMap={{ turn: TURNING }} />, and changes concavity three times. Not one
                 step of that needed graph paper. The same six steps handle the messier curves in the next
                 exercise, vertical asymptotes and all.
             </EditableParagraph>

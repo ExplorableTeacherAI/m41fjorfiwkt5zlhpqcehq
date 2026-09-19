@@ -188,7 +188,7 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         min: -3,
         max: 3,
         step: 0.05,
-        color: '#62D0AD',
+        color: '#F4A89A',
     },
     asymptoteProbeX: {
         defaultValue: 1.6,

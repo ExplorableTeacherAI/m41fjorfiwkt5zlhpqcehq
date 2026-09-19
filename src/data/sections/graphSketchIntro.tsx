@@ -1,7 +1,8 @@
 import { type ReactElement } from "react";
 import { StackLayout } from "@/components/layouts";
 import { Block } from "@/components/templates";
-import { EditableH1, EditableH3, EditableParagraph, InlineFormula, Table } from "@/components/atoms";
+import { EditableH1, EditableH3, EditableParagraph, InlineFormula, InlineTooltip, Table } from "@/components/atoms";
+import { ACCENT, GRADIENT } from "./turningPoints";
 
 export const graphSketchIntroBlocks: ReactElement[] = [
     <StackLayout key="layout-sketch-intro-title" maxWidth="xl">
@@ -15,8 +16,8 @@ export const graphSketchIntroBlocks: ReactElement[] = [
     <StackLayout key="layout-sketch-intro-hook" maxWidth="xl">
         <Block id="sketch-intro-hook" padding="sm">
             <EditableParagraph id="para-sketch-intro-hook" blockId="sketch-intro-hook">
-                Hand a calculator a hundred values of <InlineFormula latex="x" colorMap={{}} /> and it will
-                draw <InlineFormula latex="y = \frac{2x}{1 + x^2}" colorMap={{}} /> for you. Take the
+                Hand a calculator a hundred values of <InlineFormula latex="\clr{x}{x}" colorMap={{ x: ACCENT }} /> and it will
+                draw <InlineFormula latex="y = \frac{2\clr{x}{x}}{1 + \clr{x}{x}^2}" colorMap={{ x: ACCENT }} /> for you. Take the
                 calculator away and most people are stuck. Yet a mathematician can sketch that same curve
                 on the back of a receipt, in under two minutes, with every hill, valley and bend in the
                 right place.
@@ -29,9 +30,20 @@ export const graphSketchIntroBlocks: ReactElement[] = [
             <EditableParagraph id="para-sketch-intro-promise" blockId="sketch-intro-promise">
                 The secret is that a curve describes itself, through its derivatives. You can already
                 differentiate a quotient, factorise what comes out, and read
-                {" "}<InlineFormula latex="\frac{dy}{dx}" colorMap={{}} /> as a gradient. Here you will turn
-                those three skills into a finished sketch: locate the stationary points and asymptotes, decide
-                where the function is increasing or decreasing, and find its points of inflection.
+                {" "}<InlineFormula latex="\clr{grad}{\frac{dy}{dx}}" colorMap={{ grad: GRADIENT }} /> as a gradient. Here you will turn
+                those three skills into a finished sketch: locate the{" "}
+                <InlineTooltip id="tooltip-sketch-intro-stationary" tooltip="Points where the gradient is zero, so the tangent lies flat. Hills and valleys are the turning points among them.">
+                    stationary points
+                </InlineTooltip>{" "}
+                and{" "}
+                <InlineTooltip id="tooltip-sketch-intro-asymptotes" tooltip="Straight lines the curve hugs more and more closely as it runs off the page.">
+                    asymptotes
+                </InlineTooltip>
+                , decide where the function is increasing or decreasing, and find its{" "}
+                <InlineTooltip id="tooltip-sketch-intro-inflection" tooltip="Points where the curve switches between bending upward and bending downward.">
+                    points of inflection
+                </InlineTooltip>
+                .
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -57,7 +69,7 @@ export const graphSketchIntroBlocks: ReactElement[] = [
                         cells: [
                             "1. Differentiate",
                             <span key="step-differentiate">
-                                Find <InlineFormula latex="\frac{dy}{dx}" colorMap={{}} /> and{" "}
+                                Find <InlineFormula latex="\clr{grad}{\frac{dy}{dx}}" colorMap={{ grad: GRADIENT }} /> and{" "}
                                 <InlineFormula latex="\frac{d^2y}{dx^2}" colorMap={{}} />, and write each one
                                 in factorised form.
                             </span>,
@@ -67,8 +79,8 @@ export const graphSketchIntroBlocks: ReactElement[] = [
                         cells: [
                             "2. Turning points",
                             <span key="step-turning">
-                                Set the numerator of <InlineFormula latex="\frac{dy}{dx}" colorMap={{}} /> to
-                                zero, solve for <InlineFormula latex="x" colorMap={{}} />, then substitute back
+                                Set the numerator of <InlineFormula latex="\clr{grad}{\frac{dy}{dx}}" colorMap={{ grad: GRADIENT }} /> to
+                                zero, solve for <InlineFormula latex="\clr{x}{x}" colorMap={{ x: ACCENT }} />, then substitute back
                                 into <InlineFormula latex="y" colorMap={{}} /> for the coordinates.
                             </span>,
                         ],
@@ -78,7 +90,7 @@ export const graphSketchIntroBlocks: ReactElement[] = [
                             "3. Asymptotes",
                             <span key="step-asymptotes">
                                 Set the denominator to zero for the vertical asymptotes, and look at large{" "}
-                                <InlineFormula latex="x" colorMap={{}} /> for the horizontal one.
+                                <InlineFormula latex="\clr{x}{x}" colorMap={{ x: ACCENT }} /> for the horizontal one.
                             </span>,
                         ],
                     },
@@ -86,8 +98,8 @@ export const graphSketchIntroBlocks: ReactElement[] = [
                         cells: [
                             "4. Sign of the first derivative",
                             <span key="step-first-sign">
-                                Split the axis at those <InlineFormula latex="x" colorMap={{}} /> values and
-                                test the sign of <InlineFormula latex="\frac{dy}{dx}" colorMap={{}} /> in every
+                                Split the axis at those <InlineFormula latex="\clr{x}{x}" colorMap={{ x: ACCENT }} /> values and
+                                test the sign of <InlineFormula latex="\clr{grad}{\frac{dy}{dx}}" colorMap={{ grad: GRADIENT }} /> in every
                                 interval.
                             </span>,
                         ],
